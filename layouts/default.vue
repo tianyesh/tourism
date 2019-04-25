@@ -4,6 +4,7 @@
   </div>
 </template>
 
+
 <style lang="less">
 @import '../style/common.less';
 @import '../style/mixin.less';
@@ -58,5 +59,42 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+}
+
+
+// header
+.header .user {
+  height: 80px;
+}
+
+.logout {
+  text-align: center;
+  cursor: pointer;
+}
+
+.box {
+  width: 260px;
+  z-index: 999;
+  position: absolute;
+  right: 0px;
+  top: 80px;
+  background: #fff;
+  -moz-box-shadow: -2px 4px 10px #ccc; /* 老的 Firefox */
+  box-shadow: -2px 4px 10px #ccc;
+}
+
+.box p {
+  line-height: 36px;
+  padding-left: 10px;
+}
+
+.box ul {
+  margin: 10px 0 10px 0;
+  padding: 0 0 0 10px;
+}
+
+.box ul li {
+  list-style: none;
+  line-height: 24px;
 }
 </style>

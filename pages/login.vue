@@ -82,7 +82,8 @@
                 type: 'success',
                 message: '登录成功'
               });
-              this.$router.push('admin/manage/userList')
+              await this.$store.dispatch('getAdminData');
+              this.$router.push('admin')
             } else {
               this.$message({
                 type: 'error',
@@ -111,7 +112,7 @@
                 type: 'success',
                 message: '注册成功'
               });
-              this.$router.push('manage/userList')
+              this.$router.push('admin')
             } else {
               this.$message({
                 type: 'error',

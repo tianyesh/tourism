@@ -30,6 +30,7 @@ class Check {
 	}
 	async checkSuperAdmin(req, res, next){
 		const admin_id = req.session.admin_id;
+		console.log(admin_id);
 		if (!admin_id || !Number(admin_id)) {
 			res.send({
 				status: 0,
@@ -39,6 +40,7 @@ class Check {
 			return
 		}else{
 			const admin = await AdminModel.findOne({id: admin_id});
+			console.log(admin);
 			if (!admin || admin.status != 2) {
 				res.send({
 					status: 0,

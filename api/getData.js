@@ -16,13 +16,13 @@ export const register = data => fetch('/admin/register', data, 'POST');
  * 退出
  */
 
-export const signout = () => fetch('/admin/signout');
+export const singout = () => fetch('/admin/singout');
 
 /**
  * 获取用户信息
  */
 
-export const getAdminInfo = () => fetch('/admin/info');
+export const getUserInfo = () => fetch('/user/getUserInfo');
 
 /*
 * 获取用户列表
@@ -30,9 +30,19 @@ export const getAdminInfo = () => fetch('/admin/info');
 export const getUserList = () => fetch('/user/getUserList');
 
 /*
+* 添加用户
+*/
+export const addUser = (data) => fetch('/user/addUser', data, 'POST');
+
+/*
+* 编辑用户
+*/
+export const editUser = (id, data) => fetch('/user/editUser/' + id, data, 'POST');
+
+/*
 * 删除用户
 */
-export const delUser = (id) => fetch('/user/getUserList/' + id, {}, 'DELETE');
+export const delUser = (id) => fetch('/user/delUser/' + id, {}, 'DELETE');
 
 /**
  * api请求量
@@ -229,7 +239,7 @@ export const getOrderCount = data => fetch('/bos/orders/count', data);
  * 获取用户信息
  */
 
-export const getUserInfo = user_id => fetch('/v1/user/' + user_id);
+// export const getUserInfo = user_id => fetch('/v1/user/' + user_id);
 
 /**
  * 获取地址信息

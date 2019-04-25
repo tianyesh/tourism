@@ -121,7 +121,7 @@ class Admin extends AddressComponent {
 						user_name, 
 						password: newpassword, 
 						id: admin_id,
-						create_time: dtime(new Date()).format('YYYY-MM-DD'),
+						create_time: dtime(new Date()).format('YYYY-MM-DD HH:mm:ss'),
 						admin: adminTip,
 						status,
 					}
@@ -153,9 +153,11 @@ class Admin extends AddressComponent {
 		const md5 = crypto.createHash('md5');
 		return md5.update(password).digest('base64');
 	}
-	async singout(ctx){
+	async singout(req, res, next){
 		try{
+			console.log('sessionId:'+req.session.admin_id)
 			delete req.session.admin_id;
+			console.log('sessionId:'+req.session.admin_id)
 			res.send({
 				status: 1,
 				success: '退出成功'

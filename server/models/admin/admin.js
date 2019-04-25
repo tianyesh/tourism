@@ -35,7 +35,7 @@ Admin.findOne((err,data)=>{
 	if(!data){
 		adminData.forEach(item=>{
 			const newpassword = Md5(Md5(item.password).substr(2, 7) + Md5(item.password));
-			const create_time = dtime(new Date()).format('YYYY-MM-DD HH:mm');
+			const create_time = dtime(new Date()).format('YYYY-MM-DD HH:mm:ss');
 			item.password = newpassword;
 			item.create_time = create_time;
 			console.log(item)

@@ -5,7 +5,6 @@ import {
 export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
   type = type.toUpperCase()
   url = baseUrl + url
-  console.log(123123)
   if (type === 'GET') {
     // 数据拼接字符串
     let dataStr = ''
@@ -16,6 +15,9 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
     if (dataStr !== '') {
       dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'))
       url = url + '?' + dataStr
+      url += '&_t=' + new Date().getTime()
+    } else {
+      url += '?_t=' + new Date().getTime()
     }
   }
 
