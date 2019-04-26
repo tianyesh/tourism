@@ -5,6 +5,7 @@ import AddressComponent from '../../prototype/addressComponent'
 import crypto from 'crypto'
 import formidable from 'formidable'
 import dtime from 'time-formater'
+const configs = require('../../config/default.js')
 
 class Admin extends AddressComponent {
 	constructor(){
@@ -103,9 +104,7 @@ class Admin extends AddressComponent {
 				return
 			}
 			try{
-				console.log(user_name)
 				const admin = await AdminModel.findOne({user_name})
-				console.log(admin)
 				if (admin) {
 					console.log('该用户已经存在');
 					res.send({
@@ -125,9 +124,7 @@ class Admin extends AddressComponent {
 						admin: adminTip,
 						status,
 					}
-					console.log(`newAdmin:${JSON.stringify(newAdmin)}`);
 					await AdminModel.create(newAdmin)
-					console.log(`admin_id:${admin_id}`);
 					req.session.admin_id = admin_id;
 					res.send({
 						status: 1,
@@ -155,9 +152,9 @@ class Admin extends AddressComponent {
 	}
 	async singout(req, res, next){
 		try{
-			console.log('sessionId:'+req.session.admin_id)
 			delete req.session.admin_id;
-			console.log('sessionId:'+req.session.admin_id)
+			res.clearCookie(configs.session.name, { path: '/' });
+			req.session.destroy();
 			res.send({
 				status: 1,
 				success: '退出成功'

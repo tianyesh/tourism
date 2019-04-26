@@ -1,6 +1,5 @@
-export default function ({ store, redirect }) {
-  console.log(store.state.adminInfo)
+export default async function ({ store, redirect }) {
   if (!store.state.adminInfo.id) {
-   return redirect('/login')
+    // return redirect('/login')
   }
  }

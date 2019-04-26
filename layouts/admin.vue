@@ -32,7 +32,7 @@
     singout
   } from '../api/getData'
   export default {
-    // middleware: 'auth',
+    middleware: 'auth',
     data() {
       return {
         isInfoCardShow: false,
@@ -42,7 +42,9 @@
     async mounted() {
       await this.$store.dispatch('getAdminData');
       this.userData = this.adminInfo;
-      console.log(this.userData);
+      if(!this.userData.id){
+        this.$router.push('login');
+      }
     },
     computed: {
       ...mapState(['adminInfo']),
