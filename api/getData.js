@@ -44,6 +44,13 @@ export const editUser = (id, data) => fetch('/user/editUser/' + id, data, 'POST'
 */
 export const delUser = (id) => fetch('/user/delUser/' + id, {}, 'DELETE');
 
+
+/*
+* 获取用户列表
+*/
+export const getHotelList = () => fetch('/hotel/getHotelList');
+
+
 /**
  * api请求量
  */
