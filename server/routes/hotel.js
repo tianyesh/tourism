@@ -5,10 +5,9 @@ import Hotel from '../controller/hotel/hotel'
 import Check from '../middleware/check'
 const router = express.Router()
 
-// router.get('/getUserInfo', User.getUserInfo);
 router.get('/getHotelList', Hotel.getHotelList);
-// router.post('/addUser', Check.checkAdmin, User.addUser);
-// router.post('/editUser/:id', Check.checkAdmin, User.editUser);
-// router.delete('/delUser/:id', Check.checkSuperAdmin, User.delUser);
+router.post('/addHotel', Check.checkAdmin, Hotel.addHotel);
+router.post('/editHotel/:id', Check.checkAdmin, Hotel.editHotel);
+router.delete('/delHotel/:id', Check.checkSuperAdmin, Hotel.delHotel);
 
 export default router

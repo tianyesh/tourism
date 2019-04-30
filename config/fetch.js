@@ -20,8 +20,9 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
     } else {
       url += '?_t=' + new Date().getTime()
     }
-    url = window.location.origin + '/' + url;
   }
+
+  url = window.location.origin + '/' + url;
 
   if (window.fetch && method === 'fetch') {
     let requestConfig = {

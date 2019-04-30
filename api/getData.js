@@ -46,9 +46,33 @@ export const delUser = (id) => fetch('/user/delUser/' + id, {}, 'DELETE');
 
 
 /*
-* 获取用户列表
+* 获取酒店列表
 */
 export const getHotelList = () => fetch('/hotel/getHotelList');
+
+/*
+* 编辑酒店
+*/
+export const editHotel = (id, data) => fetch('/hotel/editHotel/' + id, data, 'POST');
+
+/*
+* 删除酒店
+*/
+export const delHotel = (id) => fetch('/hotel/delHotel/' + id, {}, 'DELETE');
+
+/*
+* 添加酒店
+*/
+export const addHotel = (data) => fetch('/hotel/addHotel', data, 'POST');
+
+/*
+* 获取省级列表
+*/
+export const getProvinceList = () => fetch('/city/getProvinceList');
+/*
+* 获取市级列表
+*/
+export const getCityList = (id) => fetch('/city/getCityList/' + id);
 
 
 /**

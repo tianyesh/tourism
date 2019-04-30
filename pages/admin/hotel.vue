@@ -5,7 +5,7 @@
         <el-breadcrumb-item>管理员</el-breadcrumb-item>
         <el-breadcrumb-item>酒店管理</el-breadcrumb-item>
       </el-breadcrumb>
-      <el-tabs type="border-card" class="margin-t-20" v-model="activeType">
+      <el-tabs type="border-card" class="margin-t-20" v-model="activeType" @tab-click="changeType">
         <el-tab-pane label="酒店列表" name="酒店列表">
           <el-table :data="hotelList" style="width: 100%" border @sort-change="sortChange" :default-sort = "{prop: 'create_time', order: 'descending'}">
             <el-table-column label="序号" width="66" header-align="center">
@@ -36,28 +36,117 @@
                 <div>
                   <el-button size="mini" type="danger" @click="delUser(scope.row)">删除</el-button>
                   <el-button size="mini" @click="changeDetails(scope.row, true)">详情</el-button>
-                  <el-button size="mini" @click="changeFormStatus(scope.row)">编辑</el-button>
+                  <el-button size="mini" @click="changeEdit(scope.row, true)">编辑</el-button>
                 </div>
               </template>
             </el-table-column>
           </el-table>
         </el-tab-pane>
         <el-tab-pane label="添加酒店" name="添加酒店">
-          <!-- <el-form :model="addUserForm" :rules="addUserRules" style="width:600px;margin: 40px auto;" ref="addUserForm">
-            <el-form-item label="用户名" prop="userName">
-              <el-input style="width: 300px" v-model="addUserForm.userName" placeholder="用户名"></el-input>
+          <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="酒店名称" prop="name">
+              <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
-              &nbsp;&nbsp;<el-input style="width: 300px" type="password" placeholder="密码" v-model="addUserForm.password"></el-input>
+            <el-form-item label="酒店简介" prop="introduce">
+              <el-input type="textarea" v-model="form.introduce"></el-input>
             </el-form-item>
-            <el-form-item label="城市" prop="city">
-              &nbsp;&nbsp;&nbsp;&nbsp;<el-input style="width: 300px" placeholder="城市" v-model="addUserForm.city"></el-input>
+            <el-form-item label="省" prop="province">
+              <el-col :span="11">
+                <el-select v-model="form.province" @change="changeProvince()" placeholder="请选择">
+                  <el-option
+                    v-for="item in provinceList"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name">
+                  </el-option>
+                </el-select>
+              </el-col>
             </el-form-item>
+            <el-form-item label="市" prop="city">
+              <el-col :span="11">
+                <el-select v-model="form.city" @change="changeCity()" placeholder="请选择">
+                  <el-option
+                    v-for="item in cityList"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name">
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="详细地址" prop="address">
+              <el-input v-model="form.address"></el-input>
+            </el-form-item>
+            <el-form-item label="电话" prop="telephone">
+              <el-input v-model="form.telephone"></el-input>
+            </el-form-item>
+            <el-form-item label="评分" prop="score">
+              <el-rate
+                v-model="form.score"
+                show-score
+                text-color="#ff9900">
+              </el-rate>
+            </el-form-item>
+            <el-form-item label="图片" prop="image_url">
+              <el-input v-model="form.image_url"></el-input>
+            </el-form-item>
+            <el-card class="box-card margin-b-20" v-for="item in form.sub_room" :key="item.room_id">
+              <div slot="header" class="clearfix">
+                <span>房间信息</span>
+                <el-button style="float: right; padding: 3px 0" @click="delRoom(item)" type="text">删除</el-button>
+              </div>
+              <div class="text item">
+                <el-form-item label="房型" prop="room_name">
+                  <el-input v-model="item.room_name" class="width-300"></el-input>
+                </el-form-item>
+                <el-form-item label="上网" prop="wifi">
+                  <el-switch
+                    v-model="item.wifi"
+                    active-text="有"
+                    inactive-text="无"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949">
+                  </el-switch>
+                </el-form-item>
+                <el-form-item label="有窗" prop="window">
+                  <el-switch
+                    v-model="item.window"
+                    active-text="有"
+                    inactive-text="无"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949">
+                  </el-switch>
+                </el-form-item>
+                <el-form-item label="早餐" prop="breakfast">
+                  <el-switch
+                    v-model="item.breakfast"
+                    active-text="有"
+                    inactive-text="无"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949">
+                  </el-switch>
+                </el-form-item>
+                <el-form-item label="面积" prop="area">
+                  <el-input v-model="item.area" class="width-300"></el-input>
+                </el-form-item>
+                <el-form-item label="可住人数" prop="hold_num">
+                  <el-input v-model="item.hold_num" class="width-300"></el-input>
+                </el-form-item>
+                <el-form-item label="价格" prop="price">
+                  <el-input v-model="item.price" class="width-300"></el-input>
+                </el-form-item>
+                <el-form-item label="剩余数量" prop="surplus_num">
+                  <el-input v-model="item.surplus_num" class="width-300"></el-input>
+                </el-form-item>
+              </div>
+            </el-card>
+            <el-button type="primary" icon="el-icon-circle-plus" @click="addRoom()">添加房型</el-button>
           </el-form>
-          <div style="width:600px;margin: 0px auto; text-align:center;">
-            <el-button type="primary" @click="addUser('addUserForm')" plain>确 定</el-button>
-            <el-button @click="resetForm('addUserForm')">清空</el-button>
-          </div> -->
+          <div style="text-align: center;">
+            <el-button type="primary" @click="addHotel()">确定</el-button>
+            <el-button>重置</el-button>
+          </div>
+          
         </el-tab-pane>
         <el-dialog title="酒店详情" :visible.sync="isShowDetails" width="800px">
           <div class="content">
@@ -136,40 +225,99 @@
             </el-form-item>
             <el-form-item label="省" prop="province">
               <el-col :span="11">
-                <el-select v-model="form.province" placeholder="请选择">
+                <el-select v-model="form.province" @change="changeProvince()" placeholder="请选择">
                   <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in provinceList"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name">
                   </el-option>
                 </el-select>
               </el-col>
             </el-form-item>
-            <el-form-item label="即时配送" prop="delivery">
-              <el-switch v-model="form.delivery"></el-switch>
+            <el-form-item label="市" prop="city">
+              <el-col :span="11">
+                <el-select v-model="form.city" @change="changeCity()" placeholder="请选择">
+                  <el-option
+                    v-for="item in cityList"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name">
+                  </el-option>
+                </el-select>
+              </el-col>
             </el-form-item>
-            <el-form-item label="活动性质" prop="type">
-              <el-checkbox-group v-model="form.type">
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-                <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-              </el-checkbox-group>
+            <el-form-item label="详细地址" prop="address">
+              <el-input v-model="form.address"></el-input>
             </el-form-item>
-            <el-form-item label="特殊资源" prop="resource">
-              <el-radio-group v-model="form.resource">
-                <el-radio label="线上品牌商赞助"></el-radio>
-                <el-radio label="线下场地免费"></el-radio>
-              </el-radio-group>
+            <el-form-item label="电话" prop="telephone">
+              <el-input v-model="form.telephone"></el-input>
             </el-form-item>
-            <el-form-item label="活动形式" prop="desc">
-              <el-input type="textarea" v-model="form.desc"></el-input>
+            <el-form-item label="评分" prop="score">
+              <el-rate
+                v-model="form.score"
+                disabled
+                show-score
+                text-color="#ff9900">
+              </el-rate>
             </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-              <el-button @click="resetForm('ruleForm')">重置</el-button>
+            <el-form-item label="图片" prop="image_url">
+              <el-input v-model="form.image_url"></el-input>
             </el-form-item>
+            <el-form-item label="创建时间" prop="create_time">
+              <el-input disabled v-model="form.create_time"></el-input>
+            </el-form-item>
+            <el-card class="box-card margin-b-20" v-for="item in form.sub_room" :key="item.room_id">
+              <div slot="header" class="clearfix">
+                <span>房间信息</span>
+                <el-button style="float: right; padding: 3px 0" @click="delRoom(item)" type="text">删除</el-button>
+              </div>
+              <div class="text item">
+                <el-form-item label="房型" prop="room_name">
+                  <el-input v-model="item.room_name" class="width-300"></el-input>
+                </el-form-item>
+                <el-form-item label="上网" prop="wifi">
+                  <el-switch
+                    v-model="item.wifi"
+                    active-text="有"
+                    inactive-text="无"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949">
+                  </el-switch>
+                </el-form-item>
+                <el-form-item label="有窗" prop="window">
+                  <el-switch
+                    v-model="item.window"
+                    active-text="有"
+                    inactive-text="无"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949">
+                  </el-switch>
+                </el-form-item>
+                <el-form-item label="早餐" prop="breakfast">
+                  <el-switch
+                    v-model="item.breakfast"
+                    active-text="有"
+                    inactive-text="无"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949">
+                  </el-switch>
+                </el-form-item>
+                <el-form-item label="面积" prop="area">
+                  <el-input v-model="item.area" class="width-300"></el-input>
+                </el-form-item>
+                <el-form-item label="可住人数" prop="hold_num">
+                  <el-input v-model="item.hold_num" class="width-300"></el-input>
+                </el-form-item>
+                <el-form-item label="价格" prop="price">
+                  <el-input v-model="item.price" class="width-300"></el-input>
+                </el-form-item>
+                <el-form-item label="剩余数量" prop="surplus_num">
+                  <el-input v-model="item.surplus_num" class="width-300"></el-input>
+                </el-form-item>
+              </div>
+            </el-card>
+            <el-button type="primary" icon="el-icon-circle-plus" @click="addRoom()">添加房型</el-button>
           </el-form>
         </el-dialog>
       </el-tabs>
@@ -183,7 +331,10 @@
     mapState
   } from 'vuex'
   import {
-    getHotelList
+    getHotelList,
+    addHotel,
+    getProvinceList,
+    getCityList
   } from '../../api/getData'
   import _ from 'lodash';
   export default {
@@ -193,17 +344,39 @@
         activeType: '酒店列表',
         isShowEditDetails: false,
         hotelList: [],
-        form: {}
+        provinceList: [],
+        cityList: [],
+        form: {
+          sub_room:[]
+        },
+        iconClasses: ['icon-rate-face-1', 'icon-rate-face-2', 'icon-rate-face-3'],
+        rules: {}
       }
     },
     mounted() {
       this.getHotelList();
+      this.getProvinceList();
     },
     computed: {
       ...mapState(['adminInfo']),
     },
     methods: {
       ...mapActions(['getAdminData']),
+      async getProvinceList() {
+        const res = await getProvinceList();
+        this.provinceList = res.data;
+      },
+      changeProvince() {
+        this.form.city = '';
+        this.getCityList();
+      },
+      async getCityList() {
+        const res = await getCityList(this.form.province);
+        this.cityList = res.data;
+      },
+      changeCity() {
+        this.$forceUpdate();
+      },
       async getHotelList() {
         const res = await getHotelList();
         this.hotelList = res.data;
@@ -211,10 +384,60 @@
       sortChange(column, prop, order) {
         console.log( column, prop, order);
       },
+      changeType() {
+        this.form = {
+          sub_room:[]
+        };
+      },
       changeDetails(row, mark) {
         this.isShowDetails = mark;
         if (mark) {
           this.form = row;
+        }
+      },
+      changeEdit(row, mark) {
+        this.isShowEditDetails = mark;
+        if (mark) {
+          this.form = row;
+        }
+      },
+      addRoom() {
+        this.form.sub_room.push({
+          area: '',
+          breakfast: false,
+          hold_num: '',
+          image_url: '',
+          price: '',
+          room_name: '',
+          surplus_num: '',
+          wifi: false,
+          window: false,
+        });
+      },
+      delRoom(room) {
+        this.$confirm('是否确认删除？', '提示', { type: 'warning' }).then(() => {
+          console.log(room);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      },
+      async addHotel() {
+        const res = await addHotel(this.form);
+        if ( res.status===1 ) {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          });
+          this.activeType = '酒店列表';
+          this.getHotelList();
+        } else {
+          this.$message({
+            type: 'error',
+            message: `${res.message}`
+          });
         }
       },
       submitForm(formName) {
@@ -264,5 +487,11 @@
   }
   .margin-l-30{
     margin-left: 30px;
+  }
+  .margin-b-20{
+    margin-bottom: 20px;
+  }
+  .width-300{
+    width: 300px;
   }
 </style>
