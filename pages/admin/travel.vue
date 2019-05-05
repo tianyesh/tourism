@@ -3,11 +3,11 @@
     <div class="userBox">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>管理员</el-breadcrumb-item>
-        <el-breadcrumb-item>酒店管理</el-breadcrumb-item>
+        <el-breadcrumb-item>景点管理</el-breadcrumb-item>
       </el-breadcrumb>
       <el-tabs type="border-card" class="margin-t-20" v-model="activeType" @tab-click="changeType">
-        <el-tab-pane label="酒店列表" name="酒店列表">
-          <el-table :data="hotelList" style="width: 100%" border @sort-change="sortChange" :default-sort = "{prop: 'create_time', order: 'descending'}">
+        <el-tab-pane label="景点列表" name="景点列表">
+          <el-table :data="travelList" style="width: 100%" border @sort-change="sortChange" :default-sort = "{prop: 'create_time', order: 'descending'}">
             <el-table-column label="序号" width="66" header-align="center">
               <template slot-scope="scope">
                 <div>{{scope.$index+1}}</div>
@@ -20,7 +20,7 @@
                 <div>{{scope.row.province}} {{scope.row.city}} {{scope.row.address}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="" label="酒店简介">
+            <el-table-column prop="" label="景点简介">
               <template slot-scope="scope">
                 <div class="two-line" :title="scope.row.introduce">{{scope.row.introduce}}</div>
               </template>
@@ -34,7 +34,7 @@
             <el-table-column property="" label="操作" width="220" align="center" header-align="center">
               <template slot-scope="scope">
                 <div>
-                  <el-button size="mini" type="danger" @click="delHotel(scope.row)">删除</el-button>
+                  <el-button size="mini" type="danger" @click="delTravel(scope.row)">删除</el-button>
                   <el-button size="mini" @click="changeDetails(scope.row, true)">详情</el-button>
                   <el-button size="mini" @click="changeEdit(scope.row, true)">编辑</el-button>
                 </div>
@@ -42,12 +42,12 @@
             </el-table-column>
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="添加酒店" name="添加酒店">
-          <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="酒店名称" prop="name">
+        <el-tab-pane label="添加景点" name="添加景点">
+          <!-- <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="景点名称" prop="name">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="酒店简介" prop="introduce">
+            <el-form-item label="景点简介" prop="introduce">
               <el-input type="textarea" v-model="form.introduce"></el-input>
             </el-form-item>
             <el-form-item label="省" prop="province">
@@ -90,9 +90,9 @@
             <el-form-item label="图片" prop="image_url">
               <el-upload
                 class="avatar-uploader"
-                :action="origin+baseUrl+'/img/addimg/hotel'"
+                :action="origin+baseUrl+'/img/addimg/travel'"
                 :show-file-list="false"
-                :on-success="handlHotelAvatarScucess"
+                :on-success="handlTravelAvatarScucess"
                 :before-upload="beforeAvatarUpload">
                 <img width="200px" height="200px" v-if="form.image_url" :src="baseImgPath + form.image_url" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -146,40 +146,17 @@
                 <el-form-item label="剩余数量" prop="surplus_num">
                   <el-input v-model="item.surplus_num" class="width-300"></el-input>
                 </el-form-item>
-                <el-form-item label="添加房间图片" prop="image_url">
-                  <!-- <el-upload
-                    class="upload-demo"
-                    :action="origin+baseUrl+'/img/addimg/hotel'"
-                    :on-preview="handlePreview"
-                    multiple
-                    :on-remove="function(file, fileList){handleRemove(file, fileList, item)}"
-                    :on-success="function(res, file){handlRoomScucess(res, file, item)}"
-                    :file-list="fileList"
-                    list-type="picture">
-                    <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                  </el-upload> -->
-                  <el-upload
-                    class="avatar-uploader"
-                    :action="origin+baseUrl+'/img/addimg/hotel'"
-                    :show-file-list="false"
-                    :on-success="function(res, file){handlRoomScucess(res, file, item)}"
-                    :before-upload="beforeAvatarUpload">
-                    <img width="200px" height="200px" v-if="item.image_url" :src="baseImgPath + item.image_url" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  </el-upload>
-                </el-form-item>
               </div>
             </el-card>
             <el-button type="primary" icon="el-icon-circle-plus" @click="addRoom()">添加房型</el-button>
           </el-form>
           <div style="text-align: center;">
-            <el-button type="primary" @click="addHotel()">确定</el-button>
+            <el-button type="primary" @click="addTravel()">确定</el-button>
             <el-button>重置</el-button>
-          </div>
+          </div> -->
           
         </el-tab-pane>
-        <el-dialog title="酒店详情" :visible.sync="isShowDetails" width="800px">
+        <!-- <el-dialog title="景点详情" :visible.sync="isShowDetails" width="800px">
           <div class="content">
             <ul>
               <li>
@@ -203,7 +180,7 @@
                 <span>{{form.score}}</span>
               </li>
               <li>
-                <span class="title">酒店图片：</span>
+                <span class="title">景点图片：</span>
                 <span>
                   <img width="200px" height="200px" v-if="form.image_url" :src="baseImgPath + form.image_url" class="avatar">
                 </span>
@@ -240,9 +217,7 @@
                     </li>
                     <li>
                       <span class="title">图片：</span>
-                      <span v-for="items in item.image_list" :key="items.url">
-                        <img style="display:inline-block;margin-right: 10px" width="200px" height="200px" :src="baseImgPath + items.url" class="avatar">
-                      </span>
+                      <span>{{item.image_url}}</span>
                     </li>
                   </ul>
                 </div>
@@ -250,12 +225,12 @@
             </ul>
           </div>
         </el-dialog>
-        <el-dialog title="编辑酒店" :visible.sync="isShowEditDetails" width="800px">
+        <el-dialog title="编辑景点" :visible.sync="isShowEditDetails" width="800px">
           <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="酒店名称" prop="name">
+            <el-form-item label="景点名称" prop="name">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="酒店简介" prop="introduce">
+            <el-form-item label="景点简介" prop="introduce">
               <el-input type="textarea" v-model="form.introduce"></el-input>
             </el-form-item>
             <el-form-item label="省" prop="province">
@@ -299,9 +274,9 @@
             <el-form-item label="图片" prop="image_url">
               <el-upload
                 class="avatar-uploader"
-                :action="origin+baseUrl+'/img/addimg/hotel'"
+                :action="origin+baseUrl+'/img/addimg/travel'"
                 :show-file-list="false"
-                :on-success="handlHotelAvatarScucess"
+                :on-success="handlTravelAvatarScucess"
                 :before-upload="beforeAvatarUpload">
                 <img width="200px" height="200px" v-if="form.image_url" :src="baseImgPath + form.image_url" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -358,27 +333,14 @@
                 <el-form-item label="剩余数量" prop="surplus_num">
                   <el-input v-model="item.surplus_num" class="width-300"></el-input>
                 </el-form-item>
-                <el-form-item label="房间图片" prop="image_url">
-                  <el-upload
-                    class="upload-demo"
-                    :action="origin+baseUrl+'/img/addimg/hotel'"
-                    :on-preview="handlePreview"
-                    :on-remove="function(file, fileList){handleRemove(file, fileList, item)}"
-                    :on-success="function(res, file){handlRoomScucess(res, file, item)}"
-                    :file-list="fileList"
-                    list-type="picture">
-                    <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                  </el-upload>
-                </el-form-item>
               </div>
             </el-card>
             <el-button type="primary" icon="el-icon-circle-plus" @click="addRoom()">添加房型</el-button>
           </el-form>
           <div style="text-align: center;">
-            <el-button type="primary" @click="editHotel()">确定</el-button>
+            <el-button type="primary" @click="editTravel()">确定</el-button>
           </div>
-        </el-dialog>
+        </el-dialog> -->
       </el-tabs>
     </div>
   </div>
@@ -390,10 +352,10 @@
     mapState
   } from 'vuex'
   import {
-    getHotelList,
-    addHotel,
-    editHotel,
-    delHotel,
+    getTravelList,
+    addTravel,
+    editTravel,
+    delTravel,
     getProvinceList,
     getCityList
   } from '../../api/getData'
@@ -403,24 +365,13 @@
     data() {
       return {
         isShowDetails: false,
-        activeType: '酒店列表',
+        activeType: '景点列表',
         isShowEditDetails: false,
-        hotelList: [],
+        travelList: [],
         provinceList: [],
         cityList: [],
-        fileList: [],
         form: {
-          sub_room:[{
-            area: '',
-            breakfast: false,
-            hold_num: '',
-            image_url: '',
-            price: '',
-            room_name: '',
-            surplus_num: '',
-            wifi: false,
-            window: false,
-          }]
+          comment:[]
         },
         origin: '',
         baseUrl: baseUrl,
@@ -430,7 +381,7 @@
       }
     },
     mounted() {
-      this.getHotelList();
+      this.getTravelList();
       this.getProvinceList();
       this.origin = window.location.origin + '/';
     },
@@ -454,26 +405,6 @@
       changeCity() {
         this.$forceUpdate();
       },
-      handleRemove(file, fileList, row) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
-      handlRoomScucess(res, file, row) {
-        
-				if (res.status == 1) {
-          _.forEach(this.form.sub_room, (item, index) => {
-            if (item.room_name === row.room_name) {
-              this.$forceUpdate();
-              this.form.sub_room[index].image_url = res.image_path;
-            }
-          });
-          console.log(this.form)
-				}else{
-					this.$message.error('上传图片失败！');
-				}
-      },
       beforeAvatarUpload(file) {
 				const isRightType = (file.type === 'image/jpeg') || (file.type === 'image/png');
 				const isLt2M = file.size / 1024 / 1024 < 2;
@@ -486,7 +417,7 @@
 				}
 				return isRightType && isLt2M;
 			},
-      handlHotelAvatarScucess(res, file) {
+      handlTravelAvatarScucess(res, file) {
         console.log(res.status)
 				if (res.status == 1) {
           this.$forceUpdate();
@@ -495,15 +426,15 @@
 					this.$message.error('上传图片失败！');
 				}
       },
-      async editHotel() {
-        const res = await editHotel(this.form.id, this.form);
+      async editTravel() {
+        const res = await editTravel(this.form.id, this.form);
         if ( res.status===1 ) {
           this.$message({
             type: 'success',
             message: '修改成功'
           });
           this.isShowEditDetails = false;
-          this.getHotelList();
+          this.getTravelList();
         } else {
           this.$message({
             type: 'error',
@@ -511,15 +442,15 @@
           });
         }
       },
-      async delHotel(row) {
+      async delTravel(row) {
         this.$confirm('是否确认删除？', '提示', { type: 'warning' }).then(async () => {
-          const res = await delHotel(row.id);
+          const res = await delTravel(row.id);
           if ( res.status===1 ) {
             this.$message({
               type: 'success',
               message: '删除成功'
             });
-            this.getHotelList();
+            this.getTravelList();
           } else {
             this.$message({
               type: 'error',
@@ -533,9 +464,9 @@
           });
         });
       },
-      async getHotelList() {
-        const res = await getHotelList();
-        this.hotelList = res.data;
+      async getTravelList() {
+        const res = await getTravelList();
+        this.travelList = res.data;
       },
       sortChange(column, prop, order) {
         console.log( column, prop, order);
@@ -557,43 +488,41 @@
           this.form = row;
         }
       },
-      addRoom() {
-        this.form.sub_room.push({
-          area: '',
-          breakfast: false,
-          hold_num: '',
-          image_url: '',
-          price: '',
-          room_name: '',
-          surplus_num: '',
-          wifi: false,
-          window: false,
-        });
-      },
-      delRoom(room) {
-        this.$confirm('是否确认删除？', '提示', { type: 'warning' }).then(() => {
-          _.remove(this.form.sub_room, (item) => { 
-            return item.room_name == room.room_name; 
-          });
-          this.$forceUpdate();
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });
-        });
-      },
-      async addHotel() {
-        console.log(this.fileList)
-        return ;
-        const res = await addHotel(this.form);
+      // addRoom() {
+      //   this.form.sub_room.push({
+      //     area: '',
+      //     breakfast: false,
+      //     hold_num: '',
+      //     image_url: '',
+      //     price: '',
+      //     room_name: '',
+      //     surplus_num: '',
+      //     wifi: false,
+      //     window: false,
+      //   });
+      // },
+      // delRoom(comment) {
+      //   this.$confirm('是否确认删除？', '提示', { type: 'warning' }).then(() => {
+      //     _.remove(this.form.comment, (item) => { 
+      //       return item.comment_id == comment.comment_id; 
+      //     });
+      //     this.$forceUpdate();
+      //   }).catch(() => {
+      //     this.$message({
+      //       type: 'info',
+      //       message: '已取消'
+      //     });
+      //   });
+      // },
+      async addTravel() {
+        const res = await addTravel(this.form);
         if ( res.status===1 ) {
           this.$message({
             type: 'success',
             message: '添加成功'
           });
-          this.activeType = '酒店列表';
-          this.getHotelList();
+          this.activeType = '景点列表';
+          this.getTravelList();
         } else {
           this.$message({
             type: 'error',

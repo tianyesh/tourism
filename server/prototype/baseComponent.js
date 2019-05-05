@@ -11,8 +11,8 @@ qiniu.conf.SECRET_KEY = 'VGNi90II9VWfxzbMvfoI5ZRHzLlzdrjpD9HcAH8A';
 
 export default class BaseComponent {
 	constructor(){
-		this.idList = ['user_id', 'admin_id', 'hotel_id'];
-		this.imgTypeList = ['hotel'];
+		this.idList = ['user_id', 'admin_id', 'hotel_id', 'img_id', 'travel_id'];
+		this.imgTypeList = ['hotel', 'travel'];
 		this.uploadImg = this.uploadImg.bind(this)
 		this.qiniu = this.qiniu.bind(this)
 	}
@@ -67,7 +67,6 @@ export default class BaseComponent {
 		}
 		try{
 			const idData = await Ids.findOne();
-			console.log('idData:'+idData)
 			idData[type] ++ ;
 			await idData.save();
 			return idData[type]
@@ -99,7 +98,7 @@ export default class BaseComponent {
 	async getPath(req){
 		return new Promise((resolve, reject) => {
 			const form = formidable.IncomingForm();
-			form.uploadDir = './public/img';
+			form.uploadDir = './static/img';
 			form.parse(req, async (err, fields, files) => {
 				let img_id;
 				try{
@@ -111,17 +110,17 @@ export default class BaseComponent {
 				}
 				const imgName = (new Date().getTime() + Math.ceil(Math.random()*10000)).toString(16) + img_id;
 				const fullName = imgName + path.extname(files.file.name);
-				const repath = './public/img/' + fullName;
+				const repath = './static/img/' + fullName;
 				try{
 					await fs.rename(files.file.path, repath);
 					gm(repath)
-					.resize(200, 200, "!")
+					//.resize(200, 200, "!")
 					.write(repath, async (err) => {
-						if(err){
-							console.log('裁切图片失败');
-							reject('裁切图片失败');
-							return
-						}
+						// if(err){
+						// 	console.log('裁切图片失败');
+						// 	reject('裁切图片失败');
+						// 	return
+						// }
 						resolve(fullName)
 					})
 				}catch(err){

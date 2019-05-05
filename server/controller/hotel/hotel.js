@@ -94,8 +94,71 @@ class Hotel extends AddressComponent {
 			}
 		})
 	}
-	async editHotel(req, res, next){}
-	async delHotel(req, res, next){}
+	async editHotel(req, res, next){
+		const id = req.params.id;
+		if (!id || !Number(id)) {
+			console.log('id参数错误', id)
+			res.send({
+				status: 0,
+				type: 'ERROR_ADMINID',
+				message: 'id参数错误',
+			})
+			return 
+		}
+		const form = new formidable.IncomingForm();
+		form.parse(req, async (err, fields, files) => {
+			if (err) {
+				console.log('获取form出错', err);
+				res.send({
+					status: 0,
+					type: 'ERROR_FORM',
+					message: '表单信息错误',
+				})
+				return 
+			}
+			const newData = fields;
+			try{
+				const hotel = await HotelModel.findOneAndUpdate({id}, {$set: newData});
+				res.send({
+					status: 1,
+					success: '修改酒店成功',
+				})
+			}catch(err){
+				console.log(err.message, err);
+				res.send({
+					status: 0,
+					type: 'ERROR_UPDATE',
+					message: '更新失败',
+				})
+			}
+		})
+	}
+	async delHotel(req, res, next){
+		const id = req.params.id;
+    if (!id || !Number(id)) {
+			console.log('id参数错误');
+			res.send({
+				status: 0,
+				type: 'ERROR_PARAMS',
+				message: 'id参数错误',
+			})
+			return 
+    }
+    try{
+			await HotelModel.remove({id: id});
+			res.send({
+				status: 1,
+				success: '删除成功',
+			})
+		}catch(err){
+			console.log('删除失败', err);
+			res.send({
+				status: 0,
+				type: 'DELETE_FAILED',
+				message: '删除失败',
+			})
+		}
+	}
 }
 
 export default new Hotel()

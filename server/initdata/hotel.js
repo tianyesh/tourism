@@ -10,7 +10,7 @@ export default [{
   introduce: '如家联盟·华驿酒店(北京南站北广场店)坐落于永定门、南站、大红门、南苑地区，不论您是商务出差还是休闲旅游北京永外金伟招待所都是理想的下榻之处。酒店地理位置优越，距离南苑机场11km，距离北京南站1km。著名的景点天安门广场和故宫均在酒店附近，您可根据时间提前做好行程安排。 酒店休闲区提供了各类设施，您可以在这里舒缓身心压力。',
   sub_room: [{
     room_id: 1,
-    image_url: "44545a0518aab93817cfe611e88bb702png",
+    image_url: 'ads',
     room_name: "特惠大床房",
     wifi: true,
     window: true,
@@ -21,7 +21,7 @@ export default [{
     surplus_num: 2
   },{
     room_id: 2,
-    image_url: "44545a0518aab93817cfe611e88bb702png",
+    image_url: 'ads',
     room_name: "特惠双床房",
     wifi: true,
     window: true,
@@ -32,7 +32,7 @@ export default [{
     surplus_num: 3
   },{
     room_id: 3,
-    image_url: "44545a0518aab93817cfe611e88bb702png",
+    image_url: 'ads',
     room_name: "家庭房",
     wifi: true,
     window: true,

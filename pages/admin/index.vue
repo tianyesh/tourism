@@ -208,7 +208,12 @@
               message: `${res.message}`
             });
           }
-        })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
       }
     }
   }

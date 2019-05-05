@@ -7,6 +7,7 @@ const idsSchema = new mongoose.Schema({
 	admin_id: Number,
 	hotel_id: Number,
 	img_id: Number,
+	travel_id: Number,
 });
 
 const Ids = mongoose.model('Ids', idsSchema);
@@ -17,7 +18,8 @@ Ids.findOne((err, data) => {
 			user_id: 0,
 			admin_id: 0,
 			hotel_id: 0,
-			img_id: 0
+			img_id: 0,
+			travel_id: 0,
 		});
 		newIds.save();
 	}

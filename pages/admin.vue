@@ -12,7 +12,7 @@
             <el-menu-item index="/admin">用户管理</el-menu-item>
             <el-menu-item index="/admin/category">分类管理</el-menu-item>
             <el-menu-item index="/admin/hotel">酒店管理</el-menu-item>
-            <el-menu-item index="/admin/scenery">景点管理</el-menu-item>
+            <el-menu-item index="/admin/travel">景点管理</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-menu-item index="4">

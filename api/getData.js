@@ -74,6 +74,27 @@ export const getProvinceList = () => fetch('/city/getProvinceList');
 */
 export const getCityList = (id) => fetch('/city/getCityList/' + id);
 
+/*
+* 获取景点列表
+*/
+export const getTravelList = () => fetch('/travel/getTravelList');
+
+/*
+* 编辑景点
+*/
+export const editTravel = (id, data) => fetch('/travel/editTravel/' + id, data, 'POST');
+
+/*
+* 删除景点
+*/
+export const delTravel = (id) => fetch('/travel/delTravel/' + id, {}, 'DELETE');
+
+/*
+* 添加景点
+*/
+export const addTravel = (data) => fetch('/travel/addTravel', data, 'POST');
+
+
 
 /**
  * api请求量
