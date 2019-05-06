@@ -15,9 +15,9 @@
             <el-menu-item index="/admin/travel">景点管理</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item index="4">
+        <el-menu-item index="/admin/setting">
           <i class="el-icon-setting"></i>
-          <span slot="title">导航四</span>
+          <span slot="title">设置</span>
         </el-menu-item>
       </el-menu>
     </div>

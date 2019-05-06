@@ -10,7 +10,36 @@ class User extends AddressComponent {
 	constructor(){
 		super()
 		this.addUser = this.addUser.bind(this)
-  }
+		this.updateAvatar = this.updateAvatar.bind(this)
+	}
+	async updateAvatar(req, res, next){
+		const id = req.params.id;
+		if (!id || !Number(id)) {
+			console.log('id参数错误', id)
+			res.send({
+				status: 0,
+				type: 'ERROR_ADMINID',
+				message: 'id参数错误',
+			})
+			return 
+		}
+
+		try{
+			const image_path = await this.getPath(req);
+			await AdminModel.findOneAndUpdate({id: id}, {$set: {avatar: image_path}});
+			res.send({
+				status: 1,
+				image_path,
+			})
+		}catch(err){
+			console.log('上传图片失败', err);
+			res.send({
+				status: 0,
+				type: 'ERROR_UPLOAD_IMG',
+				message: '上传图片失败'
+			})
+		}
+	}
   async getUserInfo(req, res, next){
 		const admin_id = req.session.admin_id;
 		console.log('admin_id: '+JSON.stringify(req.session))

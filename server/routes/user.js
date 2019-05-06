@@ -10,5 +10,6 @@ router.get('/getUserList', User.getUserList);
 router.post('/addUser', Check.checkAdmin, User.addUser);
 router.post('/editUser/:id', Check.checkAdmin, User.editUser);
 router.delete('/delUser/:id', Check.checkSuperAdmin, User.delUser);
+router.post('/update/avatar/:id', User.updateAvatar);
 
 export default router

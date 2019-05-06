@@ -6,14 +6,14 @@
                 <img src="../assets/images/logo.png" style="height:80px;margin: 0 0 0 30px;user-select: none;" />
             </div>
             <div class="user" :class="{ active: isInfoCardShow }">
-                <div class="userImg" @click="toggleUserCard">
-                </div>
+              <img v-if="adminInfo.avatar" @click="toggleUserCard" :src="baseImgPath + adminInfo.avatar" class="avatars">
+              <div v-else class="userImg" @click="toggleUserCard"></div>
             </div>
             <div class="box" v-if="isInfoCardShow">
                 <p>我的个人信息</p>
                 <ul>
-                    <li>您好，<span>{{userData.user_name}}</span></li>
-                    <li>所属角色：<span>{{userData.admin}}</span></li>
+                  <li>您好，<span>{{userData.user_name}}</span></li>
+                  <li>所属角色：<span>{{userData.admin}}</span></li>
                 </ul>
                 <p class="logout" @click="logOut">退出</p>
             </div>
@@ -29,12 +29,18 @@
     mapState
   } from 'vuex'
   import {
+    baseUrl,
+    baseImgPath
+  } from '@/config/env'
+  import {
     singout
   } from '../api/getData'
   export default {
     middleware: 'auth',
     data() {
       return {
+        baseUrl: baseUrl,
+        baseImgPath: baseImgPath,
         isInfoCardShow: false,
         userData: {}
       }
@@ -212,5 +218,15 @@ html {
   width: 178px;
   height: 178px;
   display: block;
+}
+
+.avatars {
+  display: flex;
+  width: 50px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 4px;
 }
 </style>
