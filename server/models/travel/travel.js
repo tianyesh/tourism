@@ -16,6 +16,7 @@ const travelSchema = new Schema({
   address: String,
   introduce: String,
   province: String,
+  ticket_cost: Number,
   city: String,
   comment: [{
     comment_id: Number, // 评论id
@@ -23,6 +24,8 @@ const travelSchema = new Schema({
     user_name: String, // 用户名字
     user_id: Boolean, // 用户id
     score: Number, // 评分
+    comment_time: String, // 评论时间
+    status: Boolean, // 评论状态/true:可见/false:冻结
     describe: String, // 评论描述
     praise_num: Number // 被赞数
   }]
@@ -36,7 +39,11 @@ Travel.findOne((err,data)=>{
 	if(!data){
 		travelData.forEach(item=>{
 			const create_time = dtime(new Date()).format('YYYY-MM-DD HH:mm:ss');
-			item.create_time = create_time;
+      item.create_time = create_time;
+      item.comment.forEach(items=>{
+        const comment_time = dtime(new Date()).format('YYYY-MM-DD HH:mm:ss');
+        items.comment_time = comment_time;
+      })
 			Travel.create(item);
 		})
 	}

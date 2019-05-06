@@ -95,7 +95,6 @@ export const delTravel = (id) => fetch('/travel/delTravel/' + id, {}, 'DELETE');
 export const addTravel = (data) => fetch('/travel/addTravel', data, 'POST');
 
 
-
 /**
  * api请求量
  */

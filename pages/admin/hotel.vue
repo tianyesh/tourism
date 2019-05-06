@@ -31,6 +31,13 @@
             </el-table-column>
             <el-table-column prop="create_time" sortable label="创建时间" width="110">
             </el-table-column>
+            <el-table-column prop="" label="评论" width="110">
+              <template slot-scope="scope">
+                <div>
+                  <el-button type="text" @click="showCommentList(scope.row)">评论详情</el-button>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column property="" label="操作" width="220" align="center" header-align="center">
               <template slot-scope="scope">
                 <div>
@@ -147,18 +154,6 @@
                   <el-input v-model="item.surplus_num" class="width-300"></el-input>
                 </el-form-item>
                 <el-form-item label="添加房间图片" prop="image_url">
-                  <!-- <el-upload
-                    class="upload-demo"
-                    :action="origin+baseUrl+'/img/addimg/hotel'"
-                    :on-preview="handlePreview"
-                    multiple
-                    :on-remove="function(file, fileList){handleRemove(file, fileList, item)}"
-                    :on-success="function(res, file){handlRoomScucess(res, file, item)}"
-                    :file-list="fileList"
-                    list-type="picture">
-                    <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                  </el-upload> -->
                   <el-upload
                     class="avatar-uploader"
                     :action="origin+baseUrl+'/img/addimg/hotel'"
@@ -240,8 +235,8 @@
                     </li>
                     <li>
                       <span class="title">图片：</span>
-                      <span v-for="items in item.image_list" :key="items.url">
-                        <img style="display:inline-block;margin-right: 10px" width="200px" height="200px" :src="baseImgPath + items.url" class="avatar">
+                      <span v-if="item.image_url">
+                        <img style="display:inline-block;margin-right: 10px" width="200px" height="200px" :src="baseImgPath + item.image_url" class="avatar">
                       </span>
                     </li>
                   </ul>
@@ -360,15 +355,13 @@
                 </el-form-item>
                 <el-form-item label="房间图片" prop="image_url">
                   <el-upload
-                    class="upload-demo"
+                    class="avatar-uploader"
                     :action="origin+baseUrl+'/img/addimg/hotel'"
-                    :on-preview="handlePreview"
-                    :on-remove="function(file, fileList){handleRemove(file, fileList, item)}"
+                    :show-file-list="false"
                     :on-success="function(res, file){handlRoomScucess(res, file, item)}"
-                    :file-list="fileList"
-                    list-type="picture">
-                    <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                    :before-upload="beforeAvatarUpload">
+                    <img width="200px" height="200px" v-if="item.image_url" :src="baseImgPath + item.image_url" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   </el-upload>
                 </el-form-item>
               </div>
@@ -381,6 +374,30 @@
         </el-dialog>
       </el-tabs>
     </div>
+    <el-dialog title="评论列表" :visible.sync="isShowComment" width="800px">
+      <el-table :data="comment" border>
+        <el-table-column property="user_name" label="评论人" width="80"></el-table-column>
+        <el-table-column property="score" label="打分" width="60"></el-table-column>
+        <el-table-column property="praise_num" label="被赞数" width="80"></el-table-column>
+        <el-table-column property="" label="评论状态" width="80">
+          <template slot-scope="scope">
+            <div>
+              {{scope.row.status?'可见':'冻结'}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column property="comment_time" label="评论时间" width="100"></el-table-column>
+        <el-table-column property="describe" label="评论内容"></el-table-column>
+        <el-table-column property="" label="操作" width="220" align="center" header-align="center">
+          <template slot-scope="scope">
+            <div>
+              <el-button v-if="scope.row.status" type="danger" size="mini" @click="changeStatus(scope.row, false)">冻结</el-button>
+              <el-button v-if="!scope.row.status" size="mini" @click="changeStatus(scope.row, true)">解冻</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -410,6 +427,7 @@
         cityList: [],
         fileList: [],
         form: {
+          comment:[],
           sub_room:[{
             area: '',
             breakfast: false,
@@ -422,6 +440,8 @@
             window: false,
           }]
         },
+        comment: [],
+        isShowComment: false,
         origin: '',
         baseUrl: baseUrl,
         baseImgPath: baseImgPath,
@@ -450,6 +470,28 @@
       async getCityList() {
         const res = await getCityList(this.form.province);
         this.cityList = res.data;
+      },
+      showCommentList(row) {
+        this.isShowComment = true;
+        this.comment = row.comment;
+        this.form.id = row.id;
+      },
+      async changeStatus(row, status) {
+        row.status = status;
+        const res = await editHotel(this.form.id, {comment:this.comment});
+        if ( res.status===1 ) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          });
+          this.isShowEditDetails = false;
+          this.getHotelList();
+        } else {
+          this.$message({
+            type: 'error',
+            message: `${res.message}`
+          });
+        }
       },
       changeCity() {
         this.$forceUpdate();
