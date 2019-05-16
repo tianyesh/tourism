@@ -1,7 +1,7 @@
 <template>
   <section class="container">
     <div>
-      <logo />
+      <!-- <logo />
       <h1 class="title">
         tourism
       </h1>
@@ -19,6 +19,14 @@
           target="_blank"
           class="button--grey"
         >GitHub</a>
+      </div> -->
+      <el-carousel height="400px">
+        <el-carousel-item v-for="item in banner" :key="item.url">
+          <img height="400px" width="100%" :src="item.url" />{{item.url}}
+        </el-carousel-item>
+      </el-carousel>
+      <div class="classify">
+        <span>北京</span>
       </div>
     </div>
   </section>
@@ -26,10 +34,31 @@
 
 <script>
 import Logo from '~/components/Logo.vue'
+import {
+    mapActions,
+    mapState
+  } from 'vuex'
 
 export default {
   components: {
     Logo
+  },
+  data() {
+    return {
+      banner:[{
+        url: require('../assets/images/banner1.jpg')
+      },{
+        url: require('../assets/images/banner2.jpg')
+      }]
+    }
+  },
+  async mounted() {
+  },
+  computed: {
+    ...mapState(['adminInfo']),
+  },
+  methods: {
+    ...mapActions(['getAdminData'])
   }
 }
 </script>
@@ -37,34 +66,34 @@ export default {
 <style lang="less">
 @import '../style/common.less';
 @import '../style/mixin.less';
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
+// .container {
+//   margin: 0 auto;
+//   min-height: 100vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   text-align: center;
+// }
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
+// .title {
+//   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
+//     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+//   display: block;
+//   font-weight: 300;
+//   font-size: 100px;
+//   color: #35495e;
+//   letter-spacing: 1px;
+// }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
+// .subtitle {
+//   font-weight: 300;
+//   font-size: 42px;
+//   color: #526488;
+//   word-spacing: 5px;
+//   padding-bottom: 15px;
+// }
 
-.links {
-  padding-top: 15px;
-}
+// .links {
+//   padding-top: 15px;
+// }
 </style>

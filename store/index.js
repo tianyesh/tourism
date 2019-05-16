@@ -8,12 +8,17 @@ const state = {
 	adminInfo: {
 		avatar: 'default.jpg'
 	},
+	provinceInfo: ''
 }
 
 const mutations = {
 	saveAdminInfo(state, adminInfo){
 		state.adminInfo = adminInfo;
-	}
+	},
+	changeProvince(state, province){
+		state.provinceInfo = province;
+		localStorage.setItem('province', province);
+	},
 }
 
 const actions = {
@@ -28,6 +33,9 @@ const actions = {
 		}catch(err){
 			console.log(err.message)
 		}
+	},
+	setProvince(context, province){
+		context.commit('changeProvince', province);
 	}
 }
 
