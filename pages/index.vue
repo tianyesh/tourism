@@ -25,8 +25,16 @@
           <img height="400px" width="100%" :src="item.url" />{{item.url}}
         </el-carousel-item>
       </el-carousel>
-      <div class="classify">
-        <span>北京</span>
+      <div style="padding:20px;">
+        <el-card class="box-card" shadow="always">
+          <div slot="header" class="clearfix">
+            <span>推荐酒店</span>
+            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+          </div>
+          <div v-for="o in 4" :key="o" class="text item">
+            {{'列表内容 ' + o }}
+          </div>
+        </el-card>
       </div>
     </div>
   </section>
