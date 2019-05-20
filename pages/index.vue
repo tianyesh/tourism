@@ -1,25 +1,6 @@
 <template>
   <section class="container">
     <div>
-      <!-- <logo />
-      <h1 class="title">
-        tourism
-      </h1>
-      <h2 class="subtitle">
-        My smashing Nuxt.js project
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >Documentation</a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >GitHub</a>
-      </div> -->
       <el-carousel height="400px">
         <el-carousel-item v-for="item in banner" :key="item.url">
           <img height="400px" width="100%" :src="item.url" />{{item.url}}
@@ -29,10 +10,71 @@
         <el-card class="box-card" shadow="always">
           <div slot="header" class="clearfix">
             <span>推荐酒店</span>
-            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+            <span style="margin-left:100px;cursor: pointer;" :class="{'green-c': orderHotelType==''}" @click="changeHotelOrder('')">默认排序</span>
+            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderHotelType=='1'}" @click="changeHotelOrder('1')">价格升序</span>
+            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderHotelType=='2'}" @click="changeHotelOrder('2')">价格降序</span>
+            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderHotelType=='3'}" @click="changeHotelOrder('3')">评分</span>
           </div>
-          <div v-for="o in 4" :key="o" class="text item">
-            {{'列表内容 ' + o }}
+          <div v-for="item in hotelList" :key="item.id" class="text item">
+            <ul>
+              <li>
+                <img width="200px" height="120px" style="border-radius: 4px;" :src="baseImgPath + item.image_url">
+                <div style="display:inline-block;width:300px;height:120px;vertical-align: top;">
+                  <div>
+                    <el-button type="text" class="green-c" @click="toUrl('hotel', item.id)">{{item.name}}</el-button>
+                  </div>
+                  <div>
+                    {{item.city}}市{{item.address}}
+                  </div>
+                  <div style="margin-top:20px;">
+                    电话：{{item.telephone}}
+                  </div>
+                </div>
+                <div style="display:inline-block;width:200px;height:120px;vertical-align: top; text-align: center;">
+                  <div style="font-size: 32px; color: red;margin-top:20px;">评分：{{item.score}} 分</div>
+                  <el-button type="text" class="green-c" @click="toUrl('hotel', item.id)">查看评论</el-button>
+                </div>
+                <div style="display:inline-block;width:200px;height:120px;vertical-align: top; text-align: center;">
+                  <div style="font-size: 32px; color: red;margin-top:20px;">￥{{item.minPrice}} 元</div>
+                  <el-button type="primary" size="mini" class="green-b" style="margin-top:10px" @click="toUrl('hotel', item.id)">查看详情</el-button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </el-card>
+        <el-card class="box-card" shadow="always" style="margin-top:20px">
+          <div slot="header" class="clearfix">
+            <span>推荐景点</span>
+            <span style="margin-left:100px;cursor: pointer;" :class="{'green-c': orderTravelType==''}" @click="changeTravelOrder('')">默认排序</span>
+            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderTravelType=='1'}" @click="changeTravelOrder('1')">价格升序</span>
+            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderTravelType=='2'}" @click="changeTravelOrder('2')">价格降序</span>
+            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderTravelType=='3'}" @click="changeTravelOrder('3')">评分</span>
+          </div>
+          <div v-for="item in travelList" :key="item.id" class="text item">
+            <ul>
+              <li>
+                <img width="200px" height="120px" style="border-radius: 4px;" :src="baseImgPath + item.image_url">
+                <div style="display:inline-block;width:300px;height:120px;vertical-align: top;">
+                  <div>
+                    <el-button type="text" class="green-c">{{item.name}}</el-button>
+                  </div>
+                  <div>
+                    {{item.city}}市{{item.address}}
+                  </div>
+                  <div style="margin-top:20px;">
+                    电话：{{item.telephone}}
+                  </div>
+                </div>
+                <div style="display:inline-block;width:200px;height:120px;vertical-align: top; text-align: center;">
+                  <div style="font-size: 32px; color: red;margin-top:20px;">评分：{{item.score}} 分</div>
+                  <el-button type="text" class="green-c">查看评论</el-button>
+                </div>
+                <div style="display:inline-block;width:200px;height:120px;vertical-align: top; text-align: center;">
+                  <div style="font-size: 32px; color: red;margin-top:20px;">￥{{item.ticket_cost}}元</div>
+                  <el-button type="primary" size="mini" class="green-b" style="margin-top:10px">查看详情</el-button>
+                </div>
+              </li>
+            </ul>
           </div>
         </el-card>
       </div>
@@ -41,67 +83,113 @@
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import {
+  import Logo from '~/components/Logo.vue'
+  import {
+    getHotelList,
+    getTravelList,
+    getProvinceList,
+    getCityList
+  } from '../api/getData'
+  import {
     mapActions,
     mapState
   } from 'vuex'
+  import {
+    baseUrl,
+    baseImgPath
+  } from '@/config/env.js'
 
-export default {
-  components: {
-    Logo
-  },
-  data() {
-    return {
-      banner:[{
-        url: require('../assets/images/banner1.jpg')
-      },{
-        url: require('../assets/images/banner2.jpg')
-      }]
+  export default {
+    components: {
+      Logo
+    },
+    data() {
+      return {
+        banner: [{
+          url: require('../assets/images/banner1.jpg')
+        }, {
+          url: require('../assets/images/banner2.jpg')
+        }],
+        hotelList: [],
+        travelList: [],
+        offset: 0,
+        limit: 4,
+        baseImgPath: baseImgPath,
+        baseUrl: baseUrl,
+        orderHotelType: '', // 1：价格升序 2：价格降序 3：评分
+        orderTravelType: ''
+      }
+    },
+    async mounted() {
+      this.getHotelList();
+      this.getTravelList();
+    },
+    computed: {
+      ...mapState(['adminInfo']),
+    },
+    methods: {
+      ...mapActions(['getAdminData']),
+      toUrl(type, id, hash) {
+        this.$router.push({
+          path: type,
+          name: type,
+          query: {
+            id
+          }
+        });
+      },
+      getMinPrice(list, key) {
+        let price = list[0][key];
+        list.forEach(item => {
+          if (price > item[key]){
+            price = item[key];
+          }
+        });
+        return price;
+      },
+      async getHotelList() {
+        const res = await getHotelList({
+          offset: this.offset,
+          limit: this.limit
+        });
+        this.hotelList = res.data;
+        this.hotelList.forEach(item=> {
+          item.minPrice = this.getMinPrice(item.sub_room, 'price');
+        })
+        console.log(this.hotelList)
+      },
+      async getTravelList() {
+        const res = await getTravelList({
+          offset: this.offset,
+          limit: this.limit
+        });
+        this.travelList = res.data;
+      },
+      changeHotelOrder(type) {
+        if (this.orderHotelType != type) {
+          this.orderHotelType = type;
+          console.log(this.orderHotelType);
+        }
+      },
+      changeTravelOrder(type) {
+        if (this.orderTravelType != type) {
+          this.orderTravelType = type;
+          console.log(this.orderTravelType);
+        }
+      }
     }
-  },
-  async mounted() {
-  },
-  computed: {
-    ...mapState(['adminInfo']),
-  },
-  methods: {
-    ...mapActions(['getAdminData'])
   }
-}
+
 </script>
 
 <style lang="less">
-@import '../style/common.less';
-@import '../style/mixin.less';
-// .container {
-//   margin: 0 auto;
-//   min-height: 100vh;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   text-align: center;
-// }
-
-// .title {
-//   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-//     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-//   display: block;
-//   font-weight: 300;
-//   font-size: 100px;
-//   color: #35495e;
-//   letter-spacing: 1px;
-// }
-
-// .subtitle {
-//   font-weight: 300;
-//   font-size: 42px;
-//   color: #526488;
-//   word-spacing: 5px;
-//   padding-bottom: 15px;
-// }
-
-// .links {
-//   padding-top: 15px;
-// }
+  @import '../style/common.less';
+  @import '../style/mixin.less';
+  .green-c{
+    color: #13d1be;
+  }
+  .green-b{
+    background: #13d1be;
+    border: #13d1be;
+  }
 </style>

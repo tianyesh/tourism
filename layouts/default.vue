@@ -9,7 +9,7 @@
         <el-button type="text" style="color:#fff;margin-top:20px;" @click="changeProvinceStatus(true)">[切换城市]
         </el-button>
         <div v-if="!adminInfo.admin" class="user">
-          <el-button style="margin-right:20px;" type="primary" plain>请登录</el-button>
+          <el-button style="margin-right:20px;" type="primary" plain @click="login()">请登录</el-button>
         </div>
         <div v-if="adminInfo.admin" class="user" :class="{ active: isInfoCardShow }">
           <img v-if="adminInfo.avatar" @click="toggleUserCard" :src="baseImgPath + adminInfo.avatar" class="avatars">
@@ -126,12 +126,20 @@
         this.$store.dispatch('getAdminData');
         console.log(this.adminInfo);
       },
+      login() {
+        
+        location.href = location.origin + '/login';
+      },
       //退出登录
       async logOut() {
         const res = await singout();
         this.$store.dispatch('getAdminData');
+        console.log(res)
         if (res.status === 1) {
-          this.$router.push('login');
+          // this.$router.push({
+          //   path: '/login'
+          // });
+          location.href = location.origin + '/login';
         }
       }
     }

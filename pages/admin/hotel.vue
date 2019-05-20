@@ -626,8 +626,6 @@
         });
       },
       async addHotel() {
-        console.log(this.fileList)
-        return ;
         const res = await addHotel(this.form);
         if ( res.status===1 ) {
           this.$message({

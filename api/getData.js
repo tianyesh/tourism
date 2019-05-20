@@ -48,7 +48,12 @@ export const delUser = (id) => fetch('/user/delUser/' + id, {}, 'DELETE');
 /*
 * 获取酒店列表
 */
-export const getHotelList = () => fetch('/hotel/getHotelList');
+export const getHotelList = (data) => fetch('/hotel/getHotelList', data);
+
+/*
+* 获取酒店详情
+*/
+export const getHotelDel = (id) => fetch('/hotel/getHotelDel/' + id);
 
 /*
 * 编辑酒店
@@ -77,7 +82,7 @@ export const getCityList = (id) => fetch('/city/getCityList/' + id);
 /*
 * 获取景点列表
 */
-export const getTravelList = () => fetch('/travel/getTravelList');
+export const getTravelList = (data) => fetch('/travel/getTravelList', data);
 
 /*
 * 编辑景点
