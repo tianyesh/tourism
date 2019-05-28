@@ -1,6 +1,8 @@
 'use strict';
 
 import AdminModel from '../../models/admin/admin'
+import HotelModel from '../../models/hotel/hotel'
+import TravelModel from '../../models/travel/travel'
 import AddressComponent from '../../prototype/addressComponent'
 import crypto from 'crypto'
 import formidable from 'formidable'
@@ -27,6 +29,9 @@ class User extends AddressComponent {
 		try{
 			const image_path = await this.getPath(req);
 			await AdminModel.findOneAndUpdate({id: id}, {$set: {avatar: image_path}});
+			// 更新头像地址
+			const hotelList = HotelModel.findOneAndUpdate({});
+
 			res.send({
 				status: 1,
 				image_path,

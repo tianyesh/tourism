@@ -56,7 +56,7 @@
                 <img width="200px" height="120px" style="border-radius: 4px;" :src="baseImgPath + item.image_url">
                 <div style="display:inline-block;width:300px;height:120px;vertical-align: top;">
                   <div>
-                    <el-button type="text" class="green-c">{{item.name}}</el-button>
+                    <el-button type="text" class="green-c" @click="toUrl('travel', item.id)">{{item.name}}</el-button>
                   </div>
                   <div>
                     {{item.city}}市{{item.address}}
@@ -67,11 +67,11 @@
                 </div>
                 <div style="display:inline-block;width:200px;height:120px;vertical-align: top; text-align: center;">
                   <div style="font-size: 32px; color: red;margin-top:20px;">评分：{{item.score}} 分</div>
-                  <el-button type="text" class="green-c">查看评论</el-button>
+                  <el-button type="text" class="green-c" @click="toUrl('travel', item.id)">查看评论</el-button>
                 </div>
                 <div style="display:inline-block;width:200px;height:120px;vertical-align: top; text-align: center;">
                   <div style="font-size: 32px; color: red;margin-top:20px;">￥{{item.ticket_cost}}元</div>
-                  <el-button type="primary" size="mini" class="green-b" style="margin-top:10px">查看详情</el-button>
+                  <el-button type="primary" size="mini" class="green-b" style="margin-top:10px" @click="toUrl('travel', item.id)">查看详情</el-button>
                 </div>
               </li>
             </ul>

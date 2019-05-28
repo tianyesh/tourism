@@ -61,6 +61,16 @@ export const getHotelDel = (id) => fetch('/hotel/getHotelDel/' + id);
 export const editHotel = (id, data) => fetch('/hotel/editHotel/' + id, data, 'POST');
 
 /*
+* 获取酒店详情
+*/
+export const isCanComment = (id) => fetch('/hotel/isCanComment/' + id);
+
+/*
+* 添加酒店评论
+*/
+export const addHotelComment = (id, data) => fetch('/hotel/addHotelComment/' + id, data, 'POST');
+
+/*
 * 删除酒店
 */
 export const delHotel = (id) => fetch('/hotel/delHotel/' + id, {}, 'DELETE');
@@ -83,6 +93,11 @@ export const getCityList = (id) => fetch('/city/getCityList/' + id);
 * 获取景点列表
 */
 export const getTravelList = (data) => fetch('/travel/getTravelList', data);
+
+/*
+* 获取酒店详情
+*/
+export const getTravelDel = (id) => fetch('/travel/getTravelDel/' + id);
 
 /*
 * 编辑景点

@@ -26,6 +26,32 @@ class Travel extends AddressComponent {
 			})
 		}
 	}
+	async getTravelDel(req, res, next){
+		const id = req.params.id;
+		if (!id || !Number(id)) {
+			console.log('id参数错误', id)
+			res.send({
+				status: 0,
+				type: 'ERROR_ADMINID',
+				message: 'id参数错误',
+			})
+			return 
+		}
+		try{
+			const travel = await TravelModel.findOne({id});
+			res.send({
+				status: 1,
+				data: travel
+			})
+		}catch(err){
+			console.log(err.message, err);
+			res.send({
+				status: 0,
+				type: 'ERROR_GET',
+				message: '查询失败',
+			})
+		}
+	}
 	async addTravel(req, res, next){
 		const form = new formidable.IncomingForm();
 		form.parse(req, async (err, fields, files) => {

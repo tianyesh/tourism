@@ -6,6 +6,7 @@ import Check from '../middleware/check'
 const router = express.Router()
 
 router.get('/getTravelList', Travel.getTravelList);
+router.get('/getTravelDel/:id', Travel.getTravelDel);
 router.post('/addTravel', Check.checkAdmin, Travel.addTravel);
 router.post('/editTravel/:id', Check.checkAdmin, Travel.editTravel);
 router.delete('/delTravel/:id', Check.checkSuperAdmin, Travel.delTravel);

@@ -37,7 +37,7 @@
       <div style="margin: 20px 0;">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>用户评论</span>
+            <span>用户评论({{hotelObj.comment?hotelObj.comment.length:0}})</span>
             <span style="float:right;">整体评分：<span style="color: red; font-size: 20px">{{hotelObj.score}}</span>/5分 </span>
           </div>
           <ul v-if="hotelObj.comment&&hotelObj.comment.length>0">
@@ -61,6 +61,29 @@
           <div v-else>
             暂无评论
           </div>
+          <el-row>
+            <el-col :span="12">
+              <el-input
+                type="textarea"
+                :disabled="isCanComment"
+                :rows="6"
+                placeholder="请输入内容"
+                v-model="comment">
+              </el-input>
+              <el-button type="primary" :disabled="isCanComment" @click="addComment" style="margin-top:20px;">提交评论</el-button>
+            </el-col>
+            <el-col :span="12" style="text-align: center;">
+              <span>评分：</span>
+              <el-rate
+                style="display:inline-block;"
+                v-model="score"
+                show-score
+                 :disabled="isCanComment"
+                text-color="#ff9900">
+              </el-rate>
+              <!-- <el-button type="primary" :disabled="isCanComment" @click="addComment" style="margin-top:20px;">提交评分</el-button> -->
+            </el-col>
+          </el-row>
         </el-card>
       </div>
     </div>
@@ -74,7 +97,9 @@
     getTravelList,
     getProvinceList,
     getCityList,
-    getHotelDel
+    getHotelDel,
+    isCanComment,
+    addHotelComment
   } from '../api/getData'
   import {
     mapActions,
@@ -93,13 +118,17 @@
         hotelId: '',
         hotelObj: {},
         currentImg: '',
-        imgList: []
+        comment: '',
+        score: 0,
+        imgList: [],
+        isCanComment: false
       }
     },
     async mounted() {
       this.hotelId = this.$route.query.id;
       console.log(this.$route);
       this.getHotelDel();
+      this.getCommentStatus();
     },
     computed: {
       ...mapState(['adminInfo']),
@@ -108,6 +137,37 @@
       ...mapActions(['getAdminData']),
       changeImg(index) {
         this.currentImg = this.baseImgPath + this.imgList[index].url;
+      },
+      async getCommentStatus() {
+        const res = await isCanComment(this.hotelId);
+        this.isCanComment = res.data;
+        console.log(this.isCanComment);
+      },
+      async addComment() {
+        if (this.score < 1) {
+          this.$alert('请给酒店评分', '提示');
+          return false;
+        }
+        let obj = {
+          photo_url: this.adminInfo.avatar,
+          user_name: this.adminInfo.user_name,
+          user_id: this.adminInfo.id,
+          score: this.score,
+          describe: this.comment
+        };
+        const res = await addHotelComment(this.hotelId, obj);
+        if (res.status === 1) {
+          this.$message({
+            type: 'success',
+            message: '评论成功'
+          });
+        } else {
+          this.$message({
+            type: 'error',
+            message: `${res.message}`
+          });
+        }
+        console.log(obj);
       },
       async getHotelDel() {
         const res = await getHotelDel(this.hotelId);
@@ -119,6 +179,11 @@
           this.imgList.push({
             url: this.hotelObj.image_url
           })
+          this.hotelObj.comment.forEach(item => {
+            if (item.user_id == this.adminInfo.id) {
+              this.score = item.score;
+            }
+          });
           this.hotelObj.sub_room.forEach(item => {
             if (item.image_url) {
               this.imgList.push({
