@@ -37,7 +37,7 @@
       </header>
     </div>
     <nuxt />
-    <footer>
+    <!-- <footer>
       <div class="check-common-footer">
         <div class="footer-container">
           声明
@@ -47,7 +47,7 @@
           本网站为毕业设计所做，不可商用
         </div>
       </div>
-    </footer>
+    </footer> -->
   </div>
 </template>
 
