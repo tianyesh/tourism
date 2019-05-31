@@ -30,8 +30,7 @@ class User extends AddressComponent {
 			const image_path = await this.getPath(req);
 			await AdminModel.findOneAndUpdate({id: id}, {$set: {avatar: image_path}});
 			// 更新头像地址
-			const hotelList = HotelModel.findOneAndUpdate({});
-
+			const hotelList = HotelModel.update({'comment.user_id':id},{ $set: { 'comment.$.photo_url': image_path }}, {multi:true});
 			res.send({
 				status: 1,
 				image_path,

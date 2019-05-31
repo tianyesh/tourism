@@ -120,6 +120,45 @@ class Hotel extends AddressComponent {
 			}
 		})
 	}
+	async bookHotel(req, res, next) {
+		const id = req.params.id;
+		if (!id || !Number(id)) {
+			console.log('id参数错误', id)
+			res.send({
+				status: 0,
+				type: 'ERROR_ADMINID',
+				message: 'id参数错误',
+			})
+			return 
+		}
+		const form = new formidable.IncomingForm();
+		form.parse(req, async (err, fields, files) => {
+			if (err) {
+				console.log('获取form出错', err);
+				res.send({
+					status: 0,
+					type: 'ERROR_FORM',
+					message: '表单信息错误',
+				})
+				return 
+			}
+			const {room_id,surplus_num} = fields;
+			try{
+				const hotel = await HotelModel.update({id:id,'sub_room.room_id':room_id}, {$set: {'sub_room.$.surplus_num': surplus_num}});
+				res.send({
+					status: 1,
+					success: '修改成功',
+				})
+			}catch(err){
+				console.log(err.message, err);
+				res.send({
+					status: 0,
+					type: 'ERROR_UPDATE',
+					message: '更新失败',
+				})
+			}
+		})
+	}
 	async isCanComment(req, res, next){
 		const id = req.params.id;
 		const user_id = req.session.admin_id;

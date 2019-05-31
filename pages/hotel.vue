@@ -1,6 +1,7 @@
 <template>
   <section class="container">
     <div style="padding: 20px 40px;">
+      <el-button type="primary" @click="$router.push('/');">返回首页</el-button>
       <div>
         <h1>{{hotelObj.name}}</h1>
         <div>{{hotelObj.address}}</div>
@@ -12,6 +13,34 @@
             <img height="280px" width="100%" style="border-radius: 4px;" :src="baseImgPath + item.url">
           </el-carousel-item>
         </el-carousel>
+      </div>
+      <div style="margin: 20px 0;">
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>房间信息</span>
+          </div>
+          <ul v-for="item in hotelObj.sub_room" :key="item.room_id">
+            <li style="margin-bottom:20px; border-bottom: 1px solid #ccc; padding-bottom: 20px; position: relative; min-height:120px;padding-left:140px;">
+              <img width="120px" height="80px" :src="baseImgPath + item.image_url" style="vertical-align: top; position: absolute; left:0px;">
+              <div style="display:inline-block;">
+                <span style="font-weight: bold;">房间名称：</span>
+                <span>{{item.room_name}}</span>
+              </div><br />
+              <div style="display:inline-block;">
+                <span>上网:</span><span>{{item.wifi?'是':'否'}}</span>
+                <span>窗户:</span><span>{{item.window?'是':'否'}}</span>
+                <span>含早餐:</span><span>{{item.breakfast?'是':'否'}}</span>
+                <span>居住人数:</span><span>{{item.hold_num}}人</span>
+                <span>面积:</span><span>{{item.area}}平方米</span>
+              </div>
+              <div style="position: absolute; right:0px;color:red;">
+                <span>￥{{item.price}}元</span>
+                <el-button type="primary" @click="book(item.room_id,item.surplus_num)">预订</el-button><br/>
+                <span>还剩{{item.surplus_num}}间</span>
+              </div>
+            </li>
+          </ul>
+        </el-card>
       </div>
       <div style="margin: 20px 0;">
         <el-card class="box-card">
@@ -98,6 +127,7 @@
     getProvinceList,
     getCityList,
     getHotelDel,
+    bookHotel,
     isCanComment,
     addHotelComment
   } from '../api/getData'
@@ -126,7 +156,6 @@
     },
     async mounted() {
       this.hotelId = this.$route.query.id;
-      console.log(this.$route);
       this.getHotelDel();
       this.getCommentStatus();
     },
@@ -141,7 +170,6 @@
       async getCommentStatus() {
         const res = await isCanComment(this.hotelId);
         this.isCanComment = res.data;
-        console.log(this.isCanComment);
       },
       async addComment() {
         if (this.score < 1) {
@@ -168,6 +196,32 @@
           });
         }
         console.log(obj);
+      },
+      async book(roomId,surplus_num) {
+        if (surplus_num<=0) {
+          this.$alert('该房间已无，请预定其他房间', '提示');
+          return false;
+        }
+        this.$confirm('是否确认预订该房间？', '提示', { type: 'warning' }).then(async () => {
+          const res = await bookHotel(this.hotelId, {room_id: roomId,surplus_num:surplus_num-1});
+          if (res.status === 1) {
+            this.$message({
+              type: 'success',
+              message: '预订成功'
+            });
+            this.getHotelDel();
+          } else {
+            this.$message({
+              type: 'error',
+              message: `${res.message}`
+            });
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消预订'
+          });
+        });
       },
       async getHotelDel() {
         const res = await getHotelDel(this.hotelId);

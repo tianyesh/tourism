@@ -22,7 +22,7 @@ const travelSchema = new Schema({
     comment_id: Number, // 评论id
     photo_url: String, // 评论头像
     user_name: String, // 用户名字
-    user_id: Boolean, // 用户id
+    user_id: Number, // 用户id
     score: Number, // 评分
     comment_time: String, // 评论时间
     status: Boolean, // 评论状态/true:可见/false:冻结
