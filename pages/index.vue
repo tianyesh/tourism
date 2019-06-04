@@ -10,10 +10,21 @@
         <el-card class="box-card" shadow="always">
           <div slot="header" class="clearfix">
             <span>推荐酒店</span>
-            <span style="margin-left:100px;cursor: pointer;" :class="{'green-c': orderHotelType==''}" @click="changeHotelOrder('')">默认排序</span>
-            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderHotelType=='1'}" @click="changeHotelOrder('1')">价格升序</span>
-            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderHotelType=='2'}" @click="changeHotelOrder('2')">价格降序</span>
-            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderHotelType=='3'}" @click="changeHotelOrder('3')">评分</span>
+            <span style="margin-left:100px;cursor: pointer;" :class="{'green-c': orderHotelType=='0'}" @click="changeHotelOrder('0')">默认排序</span>
+            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderHotelType=='1'}" @click="changeHotelOrder('1')">评分</span>
+            <span style="float:right; margin-top:-8px;">
+              <div class="block">
+                <el-pagination
+                  @size-change="getHotelList()"
+                  @current-change="getHotelList()"
+                  :current-page.sync="hotelOffset"
+                  :page-sizes="[5, 10, 50, 100]"
+                  :page-size="hotelLimit"
+                  layout="sizes, prev, pager, next"
+                  :total="hotelTotal">
+                </el-pagination>
+              </div>
+            </span>
           </div>
           <div v-for="item in hotelList" :key="item.id" class="text item">
             <ul>
@@ -45,10 +56,21 @@
         <el-card class="box-card" shadow="always" style="margin-top:20px">
           <div slot="header" class="clearfix">
             <span>推荐景点</span>
-            <span style="margin-left:100px;cursor: pointer;" :class="{'green-c': orderTravelType==''}" @click="changeTravelOrder('')">默认排序</span>
-            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderTravelType=='1'}" @click="changeTravelOrder('1')">价格升序</span>
-            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderTravelType=='2'}" @click="changeTravelOrder('2')">价格降序</span>
-            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderTravelType=='3'}" @click="changeTravelOrder('3')">评分</span>
+            <span style="margin-left:100px;cursor: pointer;" :class="{'green-c': orderTravelType=='0'}" @click="changeTravelOrder('0')">默认排序</span>
+            <span style="margin-left:20px;cursor: pointer;" :class="{'green-c': orderTravelType=='1'}" @click="changeTravelOrder('1')">评分</span>
+            <span style="float:right; margin-top:-8px;">
+              <div class="block">
+                <el-pagination
+                  @size-change="getTravelList()"
+                  @current-change="getTravelList()"
+                  :current-page.sync="travelOffset"
+                  :page-sizes="[5, 10, 50, 100]"
+                  :page-size="travelLimit"
+                  layout="sizes, prev, pager, next"
+                  :total="travelTotal">
+                </el-pagination>
+              </div>
+            </span>
           </div>
           <div v-for="item in travelList" :key="item.id" class="text item">
             <ul>
@@ -112,20 +134,26 @@
         }],
         hotelList: [],
         travelList: [],
-        offset: 0,
-        limit: 4,
+        hotelOffset: 1,
+        hotelLimit: 10,
+        hotelTotal: 10,
+        travelOffset: 1,
+        travelLimit: 10,
+        travelTotal: 10,
         baseImgPath: baseImgPath,
         baseUrl: baseUrl,
-        orderHotelType: '', // 1：价格升序 2：价格降序 3：评分
-        orderTravelType: ''
+        orderHotelType: '0', 
+        orderTravelType: '0'
       }
     },
     async mounted() {
+      this.$store.dispatch('setProvince', localStorage.getItem('province')||'');
+      console.log(this.provinceInfo)
       this.getHotelList();
       this.getTravelList();
     },
     computed: {
-      ...mapState(['adminInfo']),
+      ...mapState(['adminInfo', 'provinceInfo']),
     },
     methods: {
       ...mapActions(['getAdminData']),
@@ -149,32 +177,36 @@
       },
       async getHotelList() {
         const res = await getHotelList({
-          offset: this.offset,
-          limit: this.limit
+          offset: (this.hotelOffset-1)*this.hotelLimit,
+          limit: this.hotelLimit,
+          orderType: this.orderHotelType,
+          province: this.provinceInfo
         });
         this.hotelList = res.data;
+        this.hotelTotal = res.total;
         this.hotelList.forEach(item=> {
           item.minPrice = this.getMinPrice(item.sub_room, 'price');
         })
-        console.log(this.hotelList)
       },
       async getTravelList() {
         const res = await getTravelList({
-          offset: this.offset,
-          limit: this.limit
+          offset: (this.travelOffset-1)*this.travelLimit,
+          limit: this.travelLimit,
+          orderType: this.orderTravelType,
+          province: this.provinceInfo
         });
         this.travelList = res.data;
       },
       changeHotelOrder(type) {
         if (this.orderHotelType != type) {
           this.orderHotelType = type;
-          console.log(this.orderHotelType);
+          this.getHotelList();
         }
       },
       changeTravelOrder(type) {
         if (this.orderTravelType != type) {
           this.orderTravelType = type;
-          console.log(this.orderTravelType);
+          this.getTravelList();
         }
       }
     }

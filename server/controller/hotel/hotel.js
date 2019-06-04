@@ -11,11 +11,18 @@ class Hotel extends AddressComponent {
 		this.addHotel = this.addHotel.bind(this)
   }
 	async getHotelList(req, res, next){
+		const {offset=0, limit=10, orderType='0', province} = req.query;
+		let orderObj = {
+			'0': {id: -1},
+			'1': {score: -1}
+		}
 		try{
-			const hotelList = await HotelModel.find({}).sort({id: -1})
+			const hotelList = await HotelModel.find({province: province}).sort(orderObj[orderType]).limit(parseInt(limit)).skip(parseInt(offset))
+			const total = await HotelModel.find({province: province}).sort(orderObj[orderType]).count()
 			res.send({
 				status: 1,
 				data: hotelList,
+				total: total
 			})
 		}catch(err){
 			console.log('获取酒店列表失败', err);

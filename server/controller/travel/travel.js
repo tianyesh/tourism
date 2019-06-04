@@ -11,11 +11,18 @@ class Travel extends AddressComponent {
 		this.addTravel = this.addTravel.bind(this)
   }
 	async getTravelList(req, res, next){
+		const {offset=0, limit=10, orderType='0', province} = req.query;
+		let orderObj = {
+			'0': {id: -1},
+			'1': {score: -1}
+		}
 		try{
-			const travelList = await TravelModel.find({}).sort({id: -1})
+			const travelList = await TravelModel.find({province: province}).sort(orderObj[orderType]).limit(parseInt(limit)).skip(parseInt(offset))
+			const total = await TravelModel.find({province: province}).sort(orderObj[orderType]).count()
 			res.send({
 				status: 1,
 				data: travelList,
+				total: total
 			})
 		}catch(err){
 			console.log('获取列表失败', err);
